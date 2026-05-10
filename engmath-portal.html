@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EngMath Portal — Advanced Engineering Mathematics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Share+Tech+Mono&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cyan:   #00f5ff;
+      --purple: #bf5fff;
+      --gold:   #ffd700;
+      --cyan-dim: rgba(0,245,255,0.15);
+      --purple-dim: rgba(191,95,255,0.15);
+      --gold-dim: rgba(255,215,0,0.12);
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.10);
+      --bg: #060912;
+      --bg2: #0d1120;
+      --text: #e2eaf8;
+      --text-muted: #7a8ba8;
+      --success: #00ff8c;
+      --danger: #ff4466;
+      --warn: #ff9f1c;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(191,95,255,0.05) 0%, transparent 70%);
+      top: -250px; right: -200px;
+      pointer-events: none; z-index: 0;
+      animation: driftBg 22s ease-in-out infinite alternate;
+    }
+    @keyframes driftBg { from { transform: translate(0,0); } to { transform: translate(-80px,80px); } }
+    .font-display { font-family: 'Orbitron', monospace; }
+    .font-mono    { font-family: 'Share Tech Mono', monospace; }
+    .glass {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .neon-cyan   { color: var(--cyan);    text-shadow: 0 0 10px var(--cyan); }
+    .neon-purple { color: var(--purple);  text-shadow: 0 0 10px var(--purple); }
+    .neon-gold   { color: var(--gold);    text-shadow: 0 0 10px var(--gold); }
+    .neon-green  { color: var(--success); text-shadow: 0 0 8px var(--success); }
+    .glow-cyan   { box-shadow: 0 0 0 1px var(--cyan),   0 0 24px rgba(0,245,255,0.2); }
+    .glow-purple { box-shadow: 0 0 0 1px var(--purple), 0 0 24px rgba(191,95,255,0.2); }
+    .btn-primary {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.6rem 1.4rem;
+      border: 1px solid var(--cyan); color: var(--cyan);
+      background: var(--cyan-dim); border-radius: 4px;
+      cursor: pointer; transition: all 0.25s;
+      position: relative; overflow: hidden; display: inline-block;
+    }
+    .btn-primary:hover { background: rgba(0,245,255,0.25); box-shadow: 0 0 20px rgba(0,245,255,0.3); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-purple { border-color: var(--purple); color: var(--purple); background: var(--purple-dim); }
+    .btn-purple:hover { background: rgba(191,95,255,0.25); box-shadow: 0 0 20px rgba(191,95,255,0.3); }
+    .btn-gold { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+    .btn-gold:hover { background: rgba(255,215,0,0.2); box-shadow: 0 0 20px rgba(255,215,0,0.25); }
+    .btn-danger { border-color: var(--danger); color: var(--danger); background: rgba(255,68,102,0.1); }
+    input[type="text"], input[type="number"] {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--glass-border); border-radius: 4px;
+      color: var(--text); font-family: 'Share Tech Mono', monospace;
+      font-size: 0.9rem; padding: 0.5rem 0.8rem;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+    }
+    input[type="text"]:focus, input[type="number"]:focus {
+      border-color: var(--cyan); box-shadow: 0 0 8px rgba(0,245,255,0.2);
+    }
+    input[type="range"] {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.1); outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--cyan); box-shadow: 0 0 8px var(--cyan); cursor: pointer;
+    }
+    #app { position: relative; z-index: 1; }
+    .section { display: none; }
+    .section.active { display: block; }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(6,9,18,0.9); border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+    }
+    .game-card {
+      position: relative; cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border-radius: 10px; overflow: hidden;
+    }
+    .game-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--cyan-dim), transparent 60%);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .game-card:hover::before { opacity: 1; }
+    .game-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(0,245,255,0.14); }
+    .prog-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .prog-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--purple)); transition: width 0.6s ease; }
+    canvas { display: block; border-radius: 6px; }
+    @keyframes successPulse {
+      0%   { opacity:0; transform:scale(0.8); }
+      50%  { opacity:1; transform:scale(1.05); }
+      100% { opacity:0; transform:scale(1); }
+    }
+    @keyframes confettiFall {
+      0%   { transform:translateY(-20px) rotate(0deg); opacity:1; }
+      100% { transform:translateY(120px) rotate(720deg); opacity:0; }
+    }
+    .success-overlay {
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(0,255,140,0.08); border-radius:8px;
+      pointer-events:none;
+      animation:successPulse 2s ease forwards; z-index:50;
+    }
+    .confetti-piece {
+      position:absolute; width:8px; height:8px; border-radius:2px;
+      animation:confettiFall 1.2s ease forwards;
+    }
+    .score-badge {
+      font-family:'Share Tech Mono',monospace;
+      font-size:0.7rem; padding:2px 8px; border-radius:2px;
+      background:var(--cyan-dim); border:1px solid rgba(0,245,255,0.3); color:var(--cyan);
+    }
+    .iso-scene { perspective:700px; perspective-origin:50% 45%; }
+    .iso-box {
+      width:140px; height:140px; position:relative;
+      transform-style:preserve-3d;
+      transform:rotateX(-25deg) rotateY(30deg);
+      transition:all 0.5s ease; margin:auto;
+      animation:spinSlow 18s linear infinite;
+    }
+    @keyframes spinSlow {
+      from { transform:rotateX(-25deg) rotateY(30deg); }
+      to   { transform:rotateX(-25deg) rotateY(390deg); }
+    }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:rgba(0,245,255,0.2); border-radius:3px; }
+    .scanlines::after {
+      content:''; position:absolute; inset:0;
+      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);
+      pointer-events:none; border-radius:inherit;
+    }
+    @keyframes blink { 50% { opacity:0; } }
+    .cursor::after { content:'█'; animation:blink 1s step-end infinite; color:var(--cyan); font-size:0.8em; }
+    .nav-tab { transition:color 0.2s; position:relative; border-radius:4px; }
+    .nav-tab::after {
+      content:''; position:absolute; bottom:-1px; left:0; right:0; height:2px;
+      background:var(--cyan); box-shadow:0 0 8px var(--cyan);
+      transform:scaleX(0); transition:transform 0.3s;
+    }
+    .nav-tab.active::after { transform:scaleX(1); }
+    .nav-tab.active { color:var(--cyan) !important; }
+    .nav-tab:hover { background:rgba(255,255,255,0.04); }
+    @keyframes xpPop {
+      0%   { opacity:0; transform:translateY(0) scale(0.8); }
+      40%  { opacity:1; transform:translateY(-18px) scale(1.1); }
+      100% { opacity:0; transform:translateY(-40px) scale(1); }
+    }
+    .xp-pop {
+      position:fixed; font-family:'Orbitron',monospace;
+      font-size:0.75rem; color:var(--gold);
+      text-shadow:0 0 10px var(--gold);
+      pointer-events:none; z-index:999;
+      animation:xpPop 1.4s ease forwards;
+    }
+    .eq-display {
+      font-family:'Share Tech Mono',monospace;
+      font-size:1rem; color:var(--purple);
+      background:rgba(191,95,255,0.06);
+      border:1px solid rgba(191,95,255,0.2);
+      border-radius:6px; padding:0.75rem 1rem; text-align:center;
+    }
+    .concept-card {
+      background:var(--glass); border:1px solid var(--glass-border);
+      border-radius:10px; padding:1.2rem;
+      transition:border-color 0.3s, box-shadow 0.3s;
+    }
+    .concept-card:hover { border-color:rgba(0,245,255,0.3); box-shadow:0 0 20px rgba(0,245,255,0.08); }
+    .concept-tag {
+      font-family:'Share Tech Mono',monospace;
+      font-size:0.65rem; padding:2px 8px; border-radius:3px;
+      display:inline-block; margin:2px;
+    }
+    @keyframes pulseRing {
+      0%   { box-shadow:0 0 0 0 rgba(191,95,255,0.4); }
+      70%  { box-shadow:0 0 0 12px rgba(191,95,255,0); }
+      100% { box-shadow:0 0 0 0 rgba(191,95,255,0); }
+    }
+    .avatar-ring { animation:pulseRing 2.5s infinite; }
+    @media (max-width:640px) { .nav-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; } }
+    /* Heat Map tiles */
+    .heat-tile {
+      border-radius:4px; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Share Tech Mono',monospace; font-size:0.75rem;
+      user-select:none;
+    }
+    .heat-tile:hover { transform:scale(1.08); }
+    /* Fourier bar */
+    .bar-wrap { display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .bar-track { width:28px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden; cursor:ns-resize; position:relative; }
+    .bar-fill { width:100%; border-radius:4px; transition:height 0.12s; position:absolute; bottom:0; }
+    /* Alchemist grid */
+    .alch-cell {
+      border-radius:8px; border:1px solid rgba(255,255,255,0.12);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:3px; padding:8px 4px; min-height:80px; transition:all 0.3s;
+    }
+    /* Volume face */
+    .iso-face { position:absolute; transition:all 0.5s; }
+    /* Bounce keyframes for correct answers */
+    @keyframes bounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+    .bounce { animation:bounce 0.4s ease; }
+    /* Flicker */
+    @keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.7} }
+    /* Timer bar */
+    @keyframes timerDrain { from{width:100%} to{width:0%} }
+    .timer-bar { height:3px; border-radius:2px; background:var(--cyan); }
+    .timer-bar.draining { animation:timerDrain linear forwards; }
+    /* Concept example box */
+    .example-box {
+      background:rgba(0,245,255,0.04); border:1px solid rgba(0,245,255,0.15);
+      border-radius:6px; padding:0.75rem 1rem; margin-top:0.5rem;
+    }
+    .example-box.purple { background:rgba(191,95,255,0.04); border-color:rgba(191,95,255,0.15); }
+    /* Accordion */
+    .accordion-body { max-height:0; overflow:hidden; transition:max-height 0.5s ease; }
+    .accordion-body.open { max-height:2000px; }
+    .accordion-toggle { cursor:pointer; user-select:none; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+<!-- NAV -->
+<nav class="px-3 py-2.5">
+  <div class="max-w-6xl mx-auto flex items-center gap-2">
+    <div class="flex items-center gap-2 mr-2 flex-shrink-0">
+      <div class="w-8 h-8 rounded border border-cyan-400/40 flex items-center justify-center">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M9 1L1 5v8l8 4 8-4V5L9 1z" stroke="#00f5ff" stroke-width="1.2" fill="none"/>
+          <path d="M9 1v16M1 5l8 4 8-4" stroke="#00f5ff" stroke-width="1.2" opacity=".5"/>
+        </svg>
+      </div>
+      <span class="font-display text-xs font-600 tracking-widest neon-cyan hidden sm:block">ENGMATH</span>
+    </div>
+    <div class="flex items-center gap-1 nav-scroll flex-1">
+      <button class="nav-tab active px-2.5 py-2 text-xs font-mono tracking-wider whitespace-nowrap" style="color:var(--text-muted)" data-section="dashboard" onclick="App.navigate('dashboard')">DASHBOARD</button>
+      <button class="nav-tab px-2.5 py-2 text-xs font-mono tracking-wider whitespace-nowrap" style="color:var(--text-muted)" data-section="concepts" onclick="App.navigate('concepts')">CONCEPTS</button>
+      <button class="nav-tab px-2.5 py-2 text-xs font-mono tracking-wider whitespace-nowrap" style="color:var(--text-muted)" data-section="about" onclick="App.navigate('about')">ABOUT</button>
+    </div>
+    <div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
+      <span class="font-mono text-xs" style="color:var(--text-muted)">XP</span>
+      <span id="nav-xp" class="font-mono text-xs neon-gold">0</span>
+    </div>
+  </div>
+</nav>
+
+<!-- DASHBOARD -->
+<section id="section-dashboard" class="section active px-4 py-8">
+  <div class="max-w-6xl mx-auto">
+    <div class="mb-10 text-center">
+      <p class="font-mono text-xs tracking-widest mb-3" style="color:var(--cyan);opacity:0.8">ADVANCED ENGINEERING MATHEMATICS — PUZZLE PORTAL</p>
+      <h1 class="font-display text-3xl sm:text-4xl font-800 mb-4">MATH <span class="neon-purple">ARCADE</span></h1>
+      <p class="text-sm max-w-xl mx-auto" style="color:var(--text-muted);line-height:1.9">Master calculus, Fourier analysis, and special functions through hands-on interactive puzzles designed for engineering students.</p>
+      <div class="mt-6 flex items-center justify-center gap-8 flex-wrap">
+        <div class="text-center"><div id="stat-completed" class="font-display text-2xl neon-cyan">0</div><div class="font-mono text-xs mt-0.5" style="color:var(--text-muted)">COMPLETED</div></div>
+        <div class="w-px h-10" style="background:var(--glass-border)"></div>
+        <div class="text-center"><div id="stat-xp" class="font-display text-2xl neon-gold">0</div><div class="font-mono text-xs mt-0.5" style="color:var(--text-muted)">TOTAL XP</div></div>
+        <div class="w-px h-10" style="background:var(--glass-border)"></div>
+        <div class="text-center"><div id="stat-streak" class="font-display text-2xl neon-green">0</div><div class="font-mono text-xs mt-0.5" style="color:var(--text-muted)">STREAK</div></div>
+        <div class="w-px h-10 hidden sm:block" style="background:var(--glass-border)"></div>
+        <div class="text-center hidden sm:block"><div class="font-display text-2xl" style="color:var(--warn)">4</div><div class="font-mono text-xs mt-0.5" style="color:var(--text-muted)">GAMES</div></div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-5 max-w-4xl mx-auto" id="game-grid"></div>
+    <div class="mt-8 glass rounded-xl p-5 max-w-4xl mx-auto">
+      <div class="flex justify-between mb-2">
+        <span class="font-mono text-xs" style="color:var(--text-muted)">PORTAL MASTERY</span>
+        <span id="prog-pct" class="font-mono text-xs neon-cyan">0%</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      <p class="font-mono text-xs mt-3" style="color:var(--text-muted)">Complete all puzzles to achieve 100% mastery of Advanced Engineering Mathematics concepts.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ARENA -->
+<section id="section-arena" class="section px-4 py-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex items-center gap-3 mb-6 flex-wrap">
+      <button onclick="App.navigate('dashboard')" class="btn-primary btn-purple text-xs py-2 px-3">← BACK</button>
+      <div class="flex-1 min-w-0">
+        <h2 id="arena-title" class="font-display text-lg neon-cyan truncate"></h2>
+        <p id="arena-subtitle" class="font-mono text-xs" style="color:var(--text-muted)"></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs" style="color:var(--text-muted)">SCORE:</span>
+        <span id="arena-score" class="font-display text-lg neon-gold">0</span>
+      </div>
+    </div>
+    <div id="arena-content"></div>
+  </div>
+</section>
+
+<!-- CONCEPTS -->
+<section id="section-concepts" class="section px-4 py-10">
+  <div class="max-w-5xl mx-auto">
+    <div class="mb-8 text-center">
+      <p class="font-mono text-xs tracking-widest mb-2" style="color:var(--cyan);opacity:0.8">REFERENCE GUIDE</p>
+      <h2 class="font-display text-2xl sm:text-3xl neon-purple mb-3">MATHEMATICAL CONCEPTS</h2>
+      <p class="text-sm" style="color:var(--text-muted);max-width:560px;margin:0 auto;line-height:1.8">Rigorous mathematical foundations with worked examples from engineering practice. Click any card to expand full details.</p>
+    </div>
+    <div id="concepts-grid" class="space-y-4"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="section-about" class="section px-4 py-12">
+  <div class="max-w-3xl mx-auto space-y-6">
+    <div class="glass rounded-xl p-7" style="border-color:rgba(255,215,0,0.25);box-shadow:0 0 30px rgba(255,215,0,0.05)">
+      <div class="flex items-start gap-5 mb-5">
+        <div class="w-16 h-16 rounded-full flex-shrink-0 flex items-center justify-center avatar-ring" style="background:var(--gold-dim);border:2px solid rgba(255,215,0,0.4)">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="10" r="6" stroke="#ffd700" stroke-width="1.5"/>
+            <path d="M4 28c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#ffd700" stroke-width="1.5" fill="none"/>
+          </svg>
+        </div>
+        <div>
+          <div class="font-mono text-xs mb-1" style="color:var(--gold);opacity:0.7">DIRECTOR & PROJECT HEAD</div>
+          <h2 class="font-display text-xl neon-gold mb-1">DR. MINAKSHI PANCHAL</h2>
+          <p class="font-mono text-sm" style="color:var(--cyan)">ASSOCIATE PROFESSOR — MATHEMATICS</p>
+        </div>
+      </div>
+      <p class="text-sm" style="color:var(--text-muted);line-height:1.9">Dr. Minakshi Panchal leads this initiative to make <span class="neon-cyan">Advanced Engineering Mathematics</span> accessible through <span class="neon-gold">gamified interactive learning</span>. Under her guidance, this portal bridges abstract mathematical theory with practical engineering intuition.</p>
+    </div>
+    <div class="glass rounded-xl p-7" style="border-color:rgba(191,95,255,0.25)">
+      <div class="flex items-start gap-5 mb-5">
+        <div class="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center" style="background:var(--purple-dim);border:1px solid rgba(191,95,255,0.3)">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="14" stroke="#bf5fff" stroke-width="1.5"/>
+            <path d="M10 20c2-4 4-8 6-8s4 4 6 8" stroke="#00f5ff" stroke-width="1.5" fill="none"/>
+            <circle cx="16" cy="11" r="2" fill="#bf5fff"/>
+          </svg>
+        </div>
+        <div>
+          <div class="font-mono text-xs mb-1" style="color:var(--text-muted)">DEVELOPER & DESIGNER</div>
+          <h2 class="font-display text-xl neon-purple mb-1">SHRIDATTA PATIL</h2>
+          <p class="font-mono text-sm" style="color:var(--cyan)">MECHANICAL ENGINEER</p>
+        </div>
+      </div>
+      <p class="text-sm" style="color:var(--text-muted);line-height:1.9">This portal sits at the intersection of <span class="neon-cyan">mechanical engineering mathematics</span> and <span class="neon-purple">logic-driven puzzle design</span>. Every game mechanic maps directly to a graduate-level concept.</p>
+    </div>
+    <div class="text-center"><button class="btn-primary" onclick="App.navigate('dashboard')">← RETURN TO DASHBOARD</button></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+'use strict';
+
+/* ===== STORAGE ===== */
+const Store = (() => {
+  const KEY = 'engmath_v3';
+  function _def() {
+    return {
+      xp:0, streak:0,
+      games:{
+        gradient:  {unlocked:true,completed:false,highScore:0,level:1},
+        wave:      {unlocked:true,completed:false,highScore:0,level:1},
+        area:      {unlocked:true,completed:false,highScore:0,level:1},
+        volume:    {unlocked:true,completed:false,highScore:0,level:1}
+      }
+    };
+  }
+  function _load() { try{return JSON.parse(localStorage.getItem(KEY))||_def();}catch{return _def();} }
+  function save(s) { try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){} }
+  function get() { return _load(); }
+  function updateGame(id, patch) {
+    const s=_load(); if(!s.games[id]) return s;
+    const wasCompleted=s.games[id].completed;
+    Object.assign(s.games[id],patch);
+    if(patch.completed&&!wasCompleted) s.xp=(s.xp||0)+200;
+    save(s); return _load();
+  }
+  function addXP(n) { const s=_load(); s.xp=(s.xp||0)+n; save(s); return s; }
+  return {get,save,updateGame,addXP};
+})();
+
+/* ===== APP ===== */
+const App = (() => {
+  const GAME_META = [
+    {
+      id:'gradient', title:'Gradient Maze', subtitle:'Partial Differentiation',
+      icon:'∇', color:'cyan',
+      desc:'Navigate a particle through a live scalar field using partial derivative controls. Field zones shift with each level — steer with ∂z/∂x and ∂z/∂y to collect all targets before time runs out.',
+      tags:['PDE','Gradient','Vector Calculus'], difficulty:'MEDIUM'
+    },
+    {
+      id:'wave', title:'Wave Synthesizer', subtitle:'Fourier Series',
+      icon:'∿', color:'purple',
+      desc:'Drag harmonic amplitude bars to match a secret target waveform. Each harmonic is a Fourier term. Score jumps when match hits 95%. Four progressively harder target shapes to unlock.',
+      tags:['Fourier','Harmonics','Signal Processing'], difficulty:'MEDIUM'
+    },
+    {
+      id:'area', title:'Area Alchemist', subtitle:'Gamma–Beta Functions',
+      icon:'Γ', color:'cyan',
+      desc:'Crack Gamma and Beta function puzzles with timed challenges and lives. Correct answers fill the alchemical grid. Bonus rounds unlock after 4 correct in a row. 8 progressively harder questions.',
+      tags:['Γ(n)','B(x,y)','Special Functions'], difficulty:'HARD'
+    },
+    {
+      id:'volume', title:'Volume Sculptor', subtitle:'Triple Integration',
+      icon:'∭', color:'purple',
+      desc:'Set integration bounds to sculpt a live 3D CSS box matching a target volume. Each level adds complexity — irregular targets, minimal-waste challenges, and bonus speed rounds.',
+      tags:['Triple Integrals','Bounds','Geometry'], difficulty:'EASY'
+    }
+  ];
+
+  const DIFF_COLORS = {EASY:'#00ff8c',MEDIUM:'#ff9f1c',HARD:'#ff4466'};
+  let currentSection='dashboard', currentGame=null;
+
+  function init() { _renderDashboard(); _renderConcepts(); _updateStats(); navigate('dashboard'); }
+
+  function navigate(section) {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    const el=document.getElementById(`section-${section}`);
+    const tab=document.querySelector(`[data-section="${section}"]`);
+    if(el)  el.classList.add('active');
+    if(tab) tab.classList.add('active');
+    currentSection=section;
+    if(section!=='arena'&&currentGame){currentGame.destroy?.();currentGame=null;}
+    if(section==='dashboard'){_renderDashboard();_updateStats();}
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function launchGame(id) {
+    const meta=GAME_META.find(g=>g.id===id);
+    const state=Store.get();
+    if(!state.games[id]?.unlocked) return;
+    document.getElementById('arena-title').textContent=meta.title;
+    document.getElementById('arena-subtitle').textContent=`// ${meta.subtitle}`;
+    document.getElementById('arena-score').textContent=state.games[id].highScore;
+    navigate('arena');
+    const GameMap={gradient:GradientMaze,wave:WaveSynth,area:AreaAlchemist,volume:VolumeSculptor};
+    const GameClass=GameMap[id];
+    if(!GameClass) return;
+    currentGame=new GameClass({
+      container:document.getElementById('arena-content'), gameId:id,
+      onScore:(score)=>{
+        document.getElementById('arena-score').textContent=score;
+        const old=Store.get().games[id].highScore;
+        if(score>old){
+          Store.updateGame(id,{highScore:score});
+          const gained=score-old;
+          if(gained>0){Store.addXP(Math.floor(gained*0.5));_showXPPop(Math.floor(gained*0.5));}
+        }
+        document.getElementById('nav-xp').textContent=Store.get().xp;
+      },
+      onComplete:()=>{
+        Store.updateGame(id,{completed:true});
+        _updateStats(); Store.addXP(200); _showXPPop(200);
+        document.getElementById('nav-xp').textContent=Store.get().xp;
+      }
+    });
+    currentGame.init();
+  }
+
+  function _showXPPop(amount) {
+    const el=document.createElement('div'); el.className='xp-pop';
+    el.textContent=`+${amount} XP`; el.style.cssText='top:60px;right:20px;';
+    document.body.appendChild(el); setTimeout(()=>el.remove(),1500);
+  }
+
+  function _renderDashboard() {
+    const grid=document.getElementById('game-grid');
+    const state=Store.get();
+    if(!grid) return; grid.innerHTML='';
+    GAME_META.forEach(meta=>{
+      const g=state.games[meta.id]||{};
+      const done=g.completed;
+      const color=meta.color==='cyan'?'#00f5ff':'#bf5fff';
+      const dimBg=meta.color==='cyan'?'rgba(0,245,255,0.05)':'rgba(191,95,255,0.05)';
+      const dimBd=meta.color==='cyan'?'rgba(0,245,255,0.18)':'rgba(191,95,255,0.18)';
+      const diffColor=DIFF_COLORS[meta.difficulty]||'#7a8ba8';
+      const card=document.createElement('div');
+      card.className='game-card glass p-5';
+      card.style.cssText=`border-color:${dimBd};`;
+      card.onclick=()=>launchGame(meta.id);
+      card.innerHTML=`
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl font-display"
+               style="background:${dimBg};border:1px solid ${dimBd};color:${color};text-shadow:0 0 12px ${color}">${meta.icon}</div>
+          <div class="flex flex-col items-end gap-1.5">
+            <span class="font-mono text-xs px-2 py-0.5 rounded" style="background:${dimBg};border:1px solid ${dimBd};color:${diffColor}">${meta.difficulty}</span>
+            ${done?`<span class="font-mono text-xs px-2 py-0.5 rounded" style="background:rgba(0,255,140,0.08);border:1px solid rgba(0,255,140,0.3);color:#00ff8c">✓ DONE</span>`:''}
+            ${g.highScore>0?`<span class="score-badge">⭐ ${g.highScore}</span>`:''}
+          </div>
+        </div>
+        <h3 class="font-display text-sm font-600 mb-0.5" style="color:${color}">${meta.title}</h3>
+        <p class="font-mono text-xs mb-3" style="color:var(--text-muted)">// ${meta.subtitle}</p>
+        <p class="text-xs mb-4" style="color:var(--text-muted);line-height:1.75">${meta.desc}</p>
+        <div class="flex flex-wrap gap-1.5 mb-4">
+          ${meta.tags.map(t=>`<span class="font-mono text-xs px-2 py-0.5 rounded" style="background:${dimBg};border:1px solid ${dimBd};color:${color}">${t}</span>`).join('')}
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="font-mono text-xs" style="color:var(--text-muted)">LVL ${g.level||1}</span>
+          <button class="btn-primary ${meta.color==='purple'?'btn-purple':''} text-xs py-1.5 px-4" onclick="event.stopPropagation();App.launchGame('${meta.id}')">LAUNCH →</button>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  function _renderConcepts() {
+    const grid=document.getElementById('concepts-grid'); if(!grid) return;
+    const concepts=[
+      {
+        title:'Partial Differentiation & Gradient',
+        symbol:'∇f = (∂f/∂x)î + (∂f/∂y)ĵ',
+        color:'#00f5ff', tagColor:'rgba(0,245,255,0.1)', border:'rgba(0,245,255,0.2)',
+        game:'Gradient Maze',
+        tags:['Partial Derivatives','Vector Fields','Directional Derivative','Gradient'],
+        intro:`The gradient of a scalar field f(x,y) is a vector that points in the direction of steepest ascent. Its magnitude gives the maximum rate of change. Partial derivatives treat all variables except one as constants.`,
+        rules:['∂/∂x treats y as constant','∂f/∂y treats x as constant','∇f ⊥ to level curves','|∇f| = max rate of increase'],
+        examples:[
+          {
+            title:'Example 1 — Temperature Field',
+            body:`Let T(x,y) = 3x²y − y³ (temperature distribution on a plate).\n∂T/∂x = 6xy  (rate of change along x, keeping y fixed)\n∂T/∂y = 3x² − 3y²  (rate of change along y, keeping x fixed)\n\nAt point (2, 1): ∂T/∂x = 12, ∂T/∂y = 9\n∇T(2,1) = 12î + 9ĵ\nThis means heat flows fastest in direction (12,9) at that point.`
+          },
+          {
+            title:'Example 2 — Directional Derivative',
+            body:`The directional derivative in unit direction û = (cos θ, sin θ) is:\n\nDᵤf = ∇f · û\n\nFor f(x,y) = x²+y², û = (1/√2, 1/√2):\n∇f = (2x, 2y). At (1,1): ∇f = (2,2)\nDᵤf = (2)(1/√2) + (2)(1/√2) = 2√2 ≈ 2.83`
+          },
+          {
+            title:'Engineering Application — Stress Gradient',
+            body:`In structural mechanics, σ(x,y) is the stress field.\n∂σ/∂x and ∂σ/∂y tell engineers where stress concentrations are highest.\nCritical points (cracks initiate) occur where |∇σ| is maximum — gradient analysis guides FEM mesh refinement.`
+          }
+        ]
+      },
+      {
+        title:'Fourier Series',
+        symbol:'f(t) = a₀/2 + Σ [aₙcos(nωt) + bₙsin(nωt)]',
+        color:'#bf5fff', tagColor:'rgba(191,95,255,0.1)', border:'rgba(191,95,255,0.2)',
+        game:'Wave Synthesizer',
+        tags:['Periodic Functions','Harmonics','Signal Decomposition','NVH Analysis'],
+        intro:`Any periodic function with period T = 2π/ω can be expressed as an infinite sum of sinusoids. The Fourier coefficients aₙ, bₙ quantify the contribution of each harmonic. This decomposes complex signals into pure frequency components.`,
+        rules:['Fundamental period: T = 2π/ω','aₙ = (2/T)∫f(t)cos(nωt)dt','bₙ = (2/T)∫f(t)sin(nωt)dt','Square wave has only odd harmonics'],
+        examples:[
+          {
+            title:'Example 1 — Square Wave Decomposition',
+            body:`For a square wave with amplitude A and period T:\n\nf(t) = (4A/π)[sin(ωt) + sin(3ωt)/3 + sin(5ωt)/5 + ...]\n\nOnly odd harmonics appear (n = 1, 3, 5...).\nThe fundamental (n=1) gives the basic shape.\nAdding n=3,5,7... sharpens the corners.\n\nIn practice: a 50 Hz power supply has harmonics at 150 Hz, 250 Hz... which cause transformer hum.`
+          },
+          {
+            title:'Example 2 — Sawtooth Wave',
+            body:`f(t) = (2A/π)[sin(ωt) − sin(2ωt)/2 + sin(3ωt)/3 − ...]\n\nAll harmonics (even and odd) are present.\nAmplitudes fall off as 1/n.\n\nEngineering use: sawtooth waves model the blade-pass frequency spectrum in rotating machinery. FFT analysis identifies damaged gear teeth by checking which harmonics are amplified.`
+          },
+          {
+            title:'Engineering Application — NVH Analysis',
+            body:`In automotive engineering, engine vibration f(t) is periodic at combustion frequency.\n\nFourier decomposition reveals:\n• n=1 (fundamental): engine firing order\n• n=2: second-order imbalance\n• High-n harmonics: valve train noise\n\nISO 2631 specifies vibration comfort limits for each harmonic separately — impossible without Fourier analysis.`
+          }
+        ]
+      },
+      {
+        title:'Gamma & Beta Functions',
+        symbol:'Γ(n) = (n−1)!   B(x,y) = Γ(x)Γ(y)/Γ(x+y)',
+        color:'#00f5ff', tagColor:'rgba(0,245,255,0.1)', border:'rgba(0,245,255,0.2)',
+        game:'Area Alchemist',
+        tags:['Special Functions','Recursion','Integration','Probability'],
+        intro:`The Gamma function Γ(n) generalises factorials to real and complex numbers via the integral definition. The Beta function B(x,y) is a two-variable extension intimately related to Γ. Both appear throughout probability theory, statistics, and engineering analysis.`,
+        rules:['Γ(n+1) = n·Γ(n) (recursion)','Γ(1/2) = √π','B(x,y) = B(y,x) (symmetry)','B(x,y) = ∫₀¹ t^(x−1)(1−t)^(y−1)dt'],
+        examples:[
+          {
+            title:'Example 1 — Computing Γ(7/2) from Scratch',
+            body:`Start with the known value: Γ(1/2) = √π\n\nApply recursion Γ(n+1) = n·Γ(n):\nΓ(3/2) = (1/2)·Γ(1/2) = √π/2\nΓ(5/2) = (3/2)·Γ(3/2) = 3√π/4\nΓ(7/2) = (5/2)·Γ(5/2) = 15√π/8 ≈ 3.3234\n\nThis extends factorial to half-integers — crucial in quantum mechanics and statistics.`
+          },
+          {
+            title:'Example 2 — Beta Function Integral',
+            body:`B(3,2) = ∫₀¹ t²(1−t) dt\n= ∫₀¹ (t² − t³) dt = [t³/3 − t⁴/4]₀¹\n= 1/3 − 1/4 = 1/12\n\nVerify: B(3,2) = Γ(3)Γ(2)/Γ(5) = 2!·1!/4! = 2/24 = 1/12 ✓\n\nBeta integrals evaluate otherwise difficult definite integrals analytically.`
+          },
+          {
+            title:'Engineering Application — Weibull Reliability',
+            body:`Component failure probability follows the Weibull distribution:\n\nP(t) = 1 − exp(−(t/η)^β)\n\nMean time to failure = η·Γ(1 + 1/β)\n\nFor β=2 (wearout failure): MTTF = η·Γ(3/2) = η·√π/2\n\nGamma function directly gives reliability engineers the average lifespan of bearings, seals, and electronic components.`
+          }
+        ]
+      },
+      {
+        title:'Triple Integration',
+        symbol:'V = ∭_R f(x,y,z) dV',
+        color:'#bf5fff', tagColor:'rgba(191,95,255,0.1)', border:'rgba(191,95,255,0.2)',
+        game:'Volume Sculptor',
+        tags:['Triple Integrals','Volume','Centroid','Moment of Inertia'],
+        intro:`A triple integral sums a function over a 3D region. Setting f=1 gives volume; ρ·dV gives mass; x·ρ·dV gives the first moment (centroid location); r²·ρ·dV gives moment of inertia. Engineers use these to analyse structural components, fluid chambers, and spacecraft tanks.`,
+        rules:['Rectangular: dV = dx·dy·dz','Cylindrical: dV = r·dr·dθ·dz','Spherical: dV = r²sinφ·dr·dφ·dθ','Fubini: order of integration is interchangeable'],
+        examples:[
+          {
+            title:'Example 1 — Volume of a Rectangular Tank',
+            body:`A fuel tank: 0≤x≤3m, 0≤y≤2m, 0≤z≤1.5m\n\nV = ∫₀³ ∫₀² ∫₀^1.5 dz dy dx\n= ∫₀³ ∫₀² 1.5 dy dx\n= ∫₀³ 3 dx = 9 m³\n\nFuel mass = ρ·V = 800 kg/m³ × 9 m³ = 7200 kg\n\nNOTE: Fubini's theorem guarantees we can integrate in any order.`
+          },
+          {
+            title:'Example 2 — Centroid of a Solid',
+            body:`Solid: 0≤x≤2, 0≤y≤2, 0≤z≤2 (uniform density ρ)\n\nMass M = ρ·∭dV = 8ρ\n\nx̄ = (1/M)·∭x·ρ·dV = (1/8)·∫₀²∫₀²∫₀² x dz dy dx\n= (1/8)·∫₀² x dx·∫₀² dy·∫₀² dz\n= (1/8)·[x²/2]₀² · 2 · 2 = (1/8)·2·2·2 = 1 m\n\nBy symmetry: x̄ = ȳ = z̄ = 1 (centre of cube, as expected)`
+          },
+          {
+            title:'Engineering Application — Moment of Inertia',
+            body:`For a solid cylinder (radius R, height h, density ρ) in cylindrical coordinates:\n\nI_z = ∫₀ʰ ∫₀^2π ∫₀ᴿ r²·ρ·r dr dθ dz\n= ρ·h·2π·[r⁴/4]₀ᴿ = πρhR⁴/2\n\nSince M = πρhR²:\nI_z = MR²/2 (standard result for solid cylinder)\n\nThis appears in flywheel design, rotational inertia calculations, and spin-up time analysis for turbomachinery.`
+          }
+        ]
+      }
+    ];
+
+    grid.innerHTML=concepts.map((c,ci)=>`
+      <div class="concept-card accordion-toggle" style="border-color:${c.border}" onclick="toggleConcept(${ci})">
+        <div class="flex items-start justify-between gap-4 flex-wrap mb-3">
+          <div>
+            <h3 class="font-display text-sm mb-0.5" style="color:${c.color}">${c.title}</h3>
+            <span class="font-mono text-xs" style="color:var(--text-muted)">Used in: ${c.game}</span>
+          </div>
+          <div class="flex flex-wrap gap-1 items-center">
+            ${c.tags.map(t=>`<span class="concept-tag font-mono" style="background:${c.tagColor};border:1px solid ${c.border};color:${c.color}">${t}</span>`).join('')}
+            <span id="acc-arrow-${ci}" class="font-mono text-xs ml-2" style="color:${c.color}">▼ EXPAND</span>
+          </div>
+        </div>
+        <div class="eq-display mb-3 text-xs sm:text-sm" style="border-color:${c.border};background:${c.tagColor}">${c.symbol}</div>
+        <p class="text-sm" style="color:var(--text-muted);line-height:1.85">${c.intro}</p>
+
+        <div class="accordion-body" id="acc-body-${ci}">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
+            ${c.rules.map(r=>`
+              <div class="glass rounded p-2.5 font-mono text-xs" style="color:${c.color};border-color:${c.border}">→ ${r}</div>
+            `).join('')}
+          </div>
+          <div class="mt-5 space-y-3">
+            <p class="font-mono text-xs" style="color:${c.color};opacity:0.7">WORKED EXAMPLES & APPLICATIONS</p>
+            ${c.examples.map(ex=>`
+              <div class="example-box${c.color==='#bf5fff'?' purple':''}">
+                <p class="font-mono text-xs mb-2" style="color:${c.color};font-weight:600">${ex.title}</p>
+                <pre class="text-xs" style="color:var(--text-muted);line-height:1.9;white-space:pre-wrap;font-family:'Share Tech Mono',monospace">${ex.body}</pre>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function _updateStats() {
+    const state=Store.get();
+    const ids=Object.keys(state.games);
+    const completed=ids.filter(k=>state.games[k].completed).length;
+    const pct=Math.round((completed/ids.length)*100);
+    const el=id=>document.getElementById(id);
+    if(el('stat-completed')) el('stat-completed').textContent=completed;
+    if(el('stat-xp'))        el('stat-xp').textContent=state.xp;
+    if(el('stat-streak'))    el('stat-streak').textContent=state.streak;
+    if(el('nav-xp'))         el('nav-xp').textContent=state.xp;
+    if(el('prog-pct'))       el('prog-pct').textContent=pct+'%';
+    if(el('prog-fill'))      el('prog-fill').style.width=pct+'%';
+  }
+
+  return {init,navigate,launchGame,_renderDashboard};
+})();
+
+// Accordion
+function toggleConcept(idx) {
+  const body=document.getElementById(`acc-body-${idx}`);
+  const arrow=document.getElementById(`acc-arrow-${idx}`);
+  if(!body) return;
+  body.classList.toggle('open');
+  if(arrow) arrow.textContent=body.classList.contains('open')?'▲ CLOSE':'▼ EXPAND';
+}
+
+// Success overlay
+function _triggerSuccess(container) {
+  const overlay=document.createElement('div'); overlay.className='success-overlay';
+  overlay.innerHTML=`<span class="font-display text-2xl neon-cyan" style="text-shadow:0 0 30px #00f5ff">✓ COMPLETE</span>`;
+  const colors=['#00f5ff','#bf5fff','#00ff8c','#ff4466','#ffd700'];
+  for(let i=0;i<28;i++){
+    const p=document.createElement('div'); p.className='confetti-piece';
+    p.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*60}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.5}s;animation-duration:${0.8+Math.random()*0.8}s;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>0.5?'50%':'2px'};`;
+    overlay.appendChild(p);
+  }
+  const target=container.querySelector('.glass')||container;
+  target.style.position='relative'; target.appendChild(overlay);
+  setTimeout(()=>overlay.remove(),2800);
+}
+
+
+/* ===================================================================
+   GAME 1: GRADIENT MAZE — Enhanced with timer, combo, heat map
+=================================================================== */
+class GradientMaze {
+  constructor({container,gameId,onScore,onComplete}) {
+    this.container=container; this.gameId=gameId;
+    this.onScore=onScore; this.onComplete=onComplete;
+    this.score=0; this.level=1; this.maxLevel=5; this.combo=0;
+    this.animId=null; this.destroyed=false;
+    this.particle={x:0,y:0,vx:0,vy:0};
+    this.targets=[]; this.fields=[];
+    this.dzdx=0; this.dzdy=0; this.running=false;
+    this.timeLeft=30; this.timerInterval=null;
+    this.trail=[];
+  }
+
+  init() {
+    this.container.innerHTML=this._buildUI();
+    this._bindEvents();
+    this._setupLevel(1);
+    this._startLoop();
+  }
+
+  _buildUI() {
+    return `
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div class="lg:col-span-2">
+        <div class="glass rounded-xl p-4 relative scanlines">
+          <div class="flex justify-between items-center mb-2">
+            <span class="font-mono text-xs neon-cyan">SCALAR FIELD z = f(x,y)</span>
+            <div class="flex items-center gap-3">
+              <span id="gm-combo" class="font-mono text-xs" style="color:var(--gold);display:none">COMBO x<span id="gm-combo-n">1</span></span>
+              <span id="gm-level" class="font-mono text-xs" style="color:var(--text-muted)">LEVEL 1/${this.maxLevel}</span>
+            </div>
+          </div>
+          <!-- Timer bar -->
+          <div class="prog-bar mb-2"><div class="timer-bar" id="gm-timer-bar" style="width:100%;transition:width 0.1s linear"></div></div>
+          <div class="flex justify-between mb-2">
+            <span class="font-mono text-xs" style="color:var(--text-muted)">TIME: <span id="gm-time" class="neon-cyan">30</span>s</span>
+            <span class="font-mono text-xs" style="color:var(--text-muted)">TARGETS: <span id="gm-targets-left" class="neon-purple">0</span></span>
+          </div>
+          <canvas id="mazeCanvas" width="520" height="340" style="width:100%;border-radius:6px;"></canvas>
+          <div id="gm-msg" class="mt-2 text-center font-mono text-xs" style="color:var(--text-muted);min-height:18px"></div>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div class="glass rounded-xl p-5">
+          <h3 class="font-display text-xs neon-cyan mb-4 tracking-wider">GRADIENT INPUT</h3>
+          <div class="eq-display mb-4 text-sm">∇z = (∂z/∂x)î + (∂z/∂y)ĵ</div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between mb-1">
+                <label class="font-mono text-xs" style="color:var(--text-muted)">∂z/∂x (horizontal)</label>
+                <span id="gm-dx-val" class="font-mono text-xs neon-cyan">0.00</span>
+              </div>
+              <input type="range" id="gm-dx" min="-4" max="4" step="0.1" value="0" />
+            </div>
+            <div>
+              <div class="flex justify-between mb-1">
+                <label class="font-mono text-xs" style="color:var(--text-muted)">∂z/∂y (vertical)</label>
+                <span id="gm-dy-val" class="font-mono text-xs neon-purple">0.00</span>
+              </div>
+              <input type="range" id="gm-dy" min="-4" max="4" step="0.1" value="0" style="accent-color:var(--purple)" />
+            </div>
+          </div>
+          <div class="mt-4 grid grid-cols-2 gap-2">
+            <button id="gm-apply" class="btn-primary text-xs py-2">▶ START</button>
+            <button id="gm-reset" class="btn-primary btn-purple text-xs py-2">↺ RESET</button>
+          </div>
+          <div id="gm-hint" class="mt-4 glass rounded-lg p-3">
+            <p class="font-mono text-xs" style="color:var(--text-muted)">Next target: <span id="gm-target-dir" class="neon-cyan">—</span></p>
+            <p class="font-mono text-xs mt-1" style="color:var(--text-muted)">Suggested ∂z/∂x: <span id="gm-hint-dx" class="neon-cyan">—</span></p>
+            <p class="font-mono text-xs" style="color:var(--text-muted)">Suggested ∂z/∂y: <span id="gm-hint-dy" class="neon-purple">—</span></p>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <div class="grid grid-cols-2 gap-3">
+            <div class="text-center"><div id="gm-score-disp" class="font-display text-xl neon-cyan">0</div><div class="font-mono text-xs" style="color:var(--text-muted)">SCORE</div></div>
+            <div class="text-center"><div id="gm-streak" class="font-display text-xl neon-gold">0</div><div class="font-mono text-xs" style="color:var(--text-muted)">STREAK</div></div>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <p class="font-mono text-xs mb-2" style="color:var(--cyan)">HOW IT WORKS</p>
+          <p class="text-xs" style="color:var(--text-muted);line-height:1.8">The particle moves via <code class="font-mono neon-cyan">v += ∇z·dt</code>. Drag both sliders to steer. Collect all glowing ⊕ targets before the timer runs out. Combo multiplier grows with consecutive fast captures!</p>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  _bindEvents() {
+    document.getElementById('gm-dx')?.addEventListener('input',e=>{
+      this.dzdx=parseFloat(e.target.value);
+      document.getElementById('gm-dx-val').textContent=this.dzdx.toFixed(2);
+    });
+    document.getElementById('gm-dy')?.addEventListener('input',e=>{
+      this.dzdy=parseFloat(e.target.value);
+      document.getElementById('gm-dy-val').textContent=this.dzdy.toFixed(2);
+    });
+    document.getElementById('gm-apply')?.addEventListener('click',()=>{
+      this.running=!this.running;
+      const btn=document.getElementById('gm-apply');
+      if(btn) btn.textContent=this.running?'⏸ PAUSE':'▶ START';
+      if(this.running && !this.timerInterval) this._startTimer();
+    });
+    document.getElementById('gm-reset')?.addEventListener('click',()=>{
+      this._setupLevel(this.level); this.running=false;
+      const btn=document.getElementById('gm-apply'); if(btn) btn.textContent='▶ START';
+    });
+  }
+
+  _startTimer() {
+    this.timerInterval=setInterval(()=>{
+      if(!this.running){return;}
+      this.timeLeft=Math.max(0,this.timeLeft-1);
+      const el=document.getElementById('gm-time'); if(el) el.textContent=this.timeLeft;
+      const bar=document.getElementById('gm-timer-bar');
+      if(bar) bar.style.width=(this.timeLeft/(20+this.level*5)*100)+'%';
+      if(this.timeLeft<=0){
+        this.running=false;
+        clearInterval(this.timerInterval); this.timerInterval=null;
+        this._setMsg('⏱ TIME\'S UP! Reset or try again.');
+        const btn=document.getElementById('gm-apply'); if(btn) btn.textContent='▶ START';
+      }
+    },1000);
+  }
+
+  _setupLevel(lvl) {
+    this.level=lvl;
+    clearInterval(this.timerInterval); this.timerInterval=null;
+    this.timeLeft=20+lvl*5; this.combo=0; this.trail=[];
+    const canvas=document.getElementById('mazeCanvas'); if(!canvas) return;
+    const W=canvas.width, H=canvas.height;
+    this.particle={x:60,y:H/2,vx:0,vy:0};
+    this.dzdx=0; this.dzdy=0;
+    // Reset sliders
+    const dx=document.getElementById('gm-dx'); if(dx){dx.value=0;}
+    const dy=document.getElementById('gm-dy'); if(dy){dy.value=0;}
+    document.getElementById('gm-dx-val').textContent='0.00';
+    document.getElementById('gm-dy-val').textContent='0.00';
+
+    // Targets spread across field
+    this.targets=[];
+    for(let i=0;i<lvl+2;i++){
+      const angle=(i/( lvl+2))*Math.PI*1.5 + 0.3;
+      const r=100+i*30;
+      const cx=W/2+Math.cos(angle)*r, cy=H/2+Math.sin(angle)*r;
+      this.targets.push({
+        x:Math.min(W-40,Math.max(40,cx)),
+        y:Math.min(H-40,Math.max(40,cy)),
+        r:20, collected:false, order:i
+      });
+    }
+    // Field zones
+    this.fields=[
+      {x:0,y:0,w:W/2,h:H,fx:1.2,fy:0,color:'rgba(0,245,255,0.04)',label:'∂z/∂x = 1.2'},
+      {x:W/2,y:0,w:W/2,h:H,fx:-1.2,fy:1.2,color:'rgba(191,95,255,0.04)',label:'∂z/∂y = 1.2'}
+    ];
+    if(lvl>=3) this.fields.push({x:W/4,y:H/3,w:W/2,h:H/3,fx:2,fy:-2,color:'rgba(0,255,140,0.04)',label:'Mixed ∇z'});
+    if(lvl>=5) this.fields.push({x:0,y:H*0.6,w:W*0.4,h:H*0.4,fx:-2.5,fy:-2,color:'rgba(255,68,102,0.04)',label:'−∇z zone'});
+
+    document.getElementById('gm-level').textContent=`LEVEL ${lvl}/${this.maxLevel}`;
+    document.getElementById('gm-targets-left').textContent=this.targets.length;
+    document.getElementById('gm-time').textContent=this.timeLeft;
+    const bar=document.getElementById('gm-timer-bar'); if(bar){bar.style.width='100%';}
+    this._setMsg('');this._updateHint();
+  }
+
+  _startLoop() {
+    const canvas=document.getElementById('mazeCanvas'); if(!canvas) return;
+    const ctx=canvas.getContext('2d');
+    const DT=0.07,DRAG=0.95;
+    const loop=()=>{
+      if(this.destroyed) return;
+      this.animId=requestAnimationFrame(loop);
+      const W=canvas.width,H=canvas.height;
+      ctx.clearRect(0,0,W,H);
+      // Fields
+      this.fields.forEach(f=>{
+        ctx.fillStyle=f.color; ctx.fillRect(f.x,f.y,f.w,f.h);
+        ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=0.8;
+        for(let ax=f.x+30;ax<f.x+f.w;ax+=50){
+          for(let ay=f.y+30;ay<f.y+f.h;ay+=50){
+            this._drawArrow(ctx,ax,ay,ax+f.fx*10,ay+f.fy*10,'rgba(255,255,255,0.15)');
+          }
+        }
+        ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.font='8px Share Tech Mono';
+        ctx.fillText(f.label,f.x+6,f.y+14);
+      });
+      // Grid
+      ctx.strokeStyle='rgba(255,255,255,0.03)'; ctx.lineWidth=0.5;
+      for(let gx=0;gx<W;gx+=40){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();}
+      for(let gy=0;gy<H;gy+=40){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
+      // Trail
+      if(this.trail.length>1){
+        ctx.beginPath();ctx.strokeStyle='rgba(0,245,255,0.25)';ctx.lineWidth=1.5;
+        this.trail.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);});
+        ctx.stroke();
+      }
+      // Targets
+      const nextIdx=this.targets.findIndex(t=>!t.collected);
+      this.targets.forEach((t,i)=>{
+        if(t.collected) return;
+        const isNext=i===nextIdx;
+        const pulse=0.5+0.5*Math.sin(Date.now()*0.005);
+        ctx.beginPath(); ctx.arc(t.x,t.y,t.r,0,Math.PI*2);
+        const grd=ctx.createRadialGradient(t.x,t.y,0,t.x,t.y,t.r);
+        grd.addColorStop(0,isNext?`rgba(0,245,255,${0.2+pulse*0.15})`:`rgba(191,95,255,0.1)`);
+        grd.addColorStop(1,'transparent');
+        ctx.fillStyle=grd; ctx.fill();
+        ctx.strokeStyle=isNext?'#00f5ff':'rgba(191,95,255,0.5)';
+        ctx.lineWidth=isNext?2:1; ctx.stroke();
+        ctx.fillStyle=isNext?'#00f5ff':'rgba(191,95,255,0.6)';
+        ctx.font=`${isNext?13:11}px Share Tech Mono`; ctx.textAlign='center';
+        ctx.fillText('⊕',t.x,t.y+5);
+        ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='9px Share Tech Mono';
+        ctx.fillText(i+1,t.x,t.y-t.r-4);
+      });
+      // Physics
+      if(this.running){
+        let fx=0,fy=0;
+        this.fields.forEach(f=>{
+          if(this.particle.x>=f.x&&this.particle.x<=f.x+f.w&&this.particle.y>=f.y&&this.particle.y<=f.y+f.h)
+            {fx+=f.fx;fy+=f.fy;}
+        });
+        this.particle.vx+=(this.dzdx+fx*0.12)*DT;
+        this.particle.vy+=(this.dzdy+fy*0.12)*DT;
+        this.particle.vx*=DRAG; this.particle.vy*=DRAG;
+        const spd=Math.hypot(this.particle.vx,this.particle.vy);
+        if(spd>5){this.particle.vx*=5/spd;this.particle.vy*=5/spd;}
+        this.particle.x+=this.particle.vx; this.particle.y+=this.particle.vy;
+        if(this.particle.x<10){this.particle.x=10;this.particle.vx*=-0.5;}
+        if(this.particle.x>W-10){this.particle.x=W-10;this.particle.vx*=-0.5;}
+        if(this.particle.y<10){this.particle.y=10;this.particle.vy*=-0.5;}
+        if(this.particle.y>H-10){this.particle.y=H-10;this.particle.vy*=-0.5;}
+        this.trail.push({x:this.particle.x,y:this.particle.y});
+        if(this.trail.length>150) this.trail.shift();
+
+        // Collect in order
+        if(nextIdx>=0){
+          const t=this.targets[nextIdx];
+          if(Math.hypot(this.particle.x-t.x,this.particle.y-t.y)<t.r+10){
+            t.collected=true; this.combo++;
+            const mult=Math.min(this.combo,5);
+            const earned=50*this.level*mult;
+            this.score+=earned; this._updateScore();
+            const rem=this.targets.filter(x=>!x.collected).length;
+            document.getElementById('gm-targets-left').textContent=rem;
+            document.getElementById('gm-streak').textContent=this.combo;
+            // Show combo
+            const comboEl=document.getElementById('gm-combo');
+            const comboN=document.getElementById('gm-combo-n');
+            if(comboEl&&comboN&&this.combo>1){comboEl.style.display='block';comboN.textContent=this.combo;}
+            this._setMsg(`+${earned}XP${mult>1?' COMBO x'+mult:''}!`);
+            if(rem===0) this._levelComplete();
+            else this._updateHint();
+          }
+        }
+      }
+      // Particle glow
+      const grd2=ctx.createRadialGradient(this.particle.x,this.particle.y,0,this.particle.x,this.particle.y,24);
+      grd2.addColorStop(0,'rgba(0,245,255,0.5)'); grd2.addColorStop(1,'transparent');
+      ctx.fillStyle=grd2; ctx.beginPath(); ctx.arc(this.particle.x,this.particle.y,24,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(this.particle.x,this.particle.y,6,0,Math.PI*2); ctx.fillStyle='#00f5ff'; ctx.fill();
+      if(this.running){
+        ctx.strokeStyle='rgba(0,245,255,0.8)'; ctx.lineWidth=1.5;
+        this._drawArrow(ctx,this.particle.x,this.particle.y,this.particle.x+this.particle.vx*16,this.particle.y+this.particle.vy*16,'rgba(0,245,255,0.8)');
+      }
+    };
+    loop();
+  }
+
+  _drawArrow(ctx,x1,y1,x2,y2,color='rgba(255,255,255,0.15)'){
+    const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy);
+    if(len<2) return;
+    ctx.strokeStyle=color; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+    const a=Math.atan2(dy,dx);
+    ctx.lineTo(x2-6*Math.cos(a-0.45),y2-6*Math.sin(a-0.45));
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-6*Math.cos(a+0.45),y2-6*Math.sin(a+0.45));
+    ctx.stroke();
+  }
+
+  _levelComplete(){
+    this.running=false; clearInterval(this.timerInterval); this.timerInterval=null;
+    const bonus=this.timeLeft*5;
+    this.score+=bonus; this._updateScore();
+    this._setMsg(`✓ LEVEL COMPLETE! Time bonus: +${bonus}`);
+    if(this.level<this.maxLevel) setTimeout(()=>this._setupLevel(this.level+1),1800);
+    else setTimeout(()=>{this.onComplete();_triggerSuccess(this.container);},1000);
+  }
+
+  _updateHint(){
+    const t=this.targets.find(x=>!x.collected); if(!t) return;
+    const dx=t.x-this.particle.x, dy=t.y-this.particle.y;
+    const el=document.getElementById('gm-target-dir');
+    if(el) el.textContent=`Δx=${dx>0?'+':''}${dx.toFixed(0)}, Δy=${dy>0?'+':''}${dy.toFixed(0)}`;
+    const hdx=document.getElementById('gm-hint-dx');
+    const hdy=document.getElementById('gm-hint-dy');
+    if(hdx) hdx.textContent=(dx>0?'+':'')+Math.min(4,Math.abs(dx/60)).toFixed(1);
+    if(hdy) hdy.textContent=(dy>0?'+':'')+Math.min(4,Math.abs(dy/60)).toFixed(1);
+  }
+
+  _updateScore(){
+    const el=document.getElementById('gm-score-disp'); if(el) el.textContent=this.score;
+    this.onScore(this.score);
+  }
+
+  _setMsg(text){
+    const el=document.getElementById('gm-msg'); if(!el) return;
+    el.textContent=text;
+    el.style.color=text.includes('✓')||text.includes('XP')?'var(--success)':text.includes('TIME')? 'var(--danger)':'var(--text-muted)';
+  }
+
+  destroy(){this.destroyed=true;if(this.animId)cancelAnimationFrame(this.animId);clearInterval(this.timerInterval);}
+}
+
+
+/* ===================================================================
+   GAME 2: WAVE SYNTHESIZER — Enhanced with drag bars + spectrum view
+=================================================================== */
+class WaveSynth {
+  constructor({container,gameId,onScore,onComplete}){
+    this.container=container; this.gameId=gameId;
+    this.onScore=onScore; this.onComplete=onComplete;
+    this.score=0; this.animId=null; this.destroyed=false; this.time=0;
+    this.harmonics=[{amp:1,freq:1},{amp:0,freq:2},{amp:0,freq:3},{amp:0,freq:4},{amp:0,freq:5},{amp:0,freq:6}];
+    this.targets=[]; this.level=1; this.levels=this._buildLevels();
+    this.draggingBar=null; this.lastMatch=0;
+    this.levelLocked=false;
+  }
+
+  _buildLevels(){
+    return [
+      {name:'Pure Sine',       amps:[1,0,0,0,0,0]},
+      {name:'Odd Harmonics',   amps:[1,0,0.33,0,0.2,0]},
+      {name:'Square Wave Approx', amps:[1,0,0.33,0,0.2,0]},  // hint for square
+      {name:'Even & Odd Mix',  amps:[0.8,0.5,0.3,0.2,0,0]},
+      {name:'Full Spectrum',   amps:[1,0.5,0.33,0.25,0.2,0.16]}
+    ];
+  }
+
+  init(){
+    this.container.innerHTML=this._buildUI();
+    this._loadLevel(0);
+    this._bindDragBars();
+    this._startLoop();
+  }
+
+  _buildUI(){
+    const bars=this.harmonics.map((h,i)=>`
+      <div class="bar-wrap flex-1">
+        <div class="font-mono text-center mb-1" style="font-size:9px;color:var(--text-muted)">n=${i+1}</div>
+        <div class="bar-track" id="ws-track-${i}" style="height:120px;border:1px solid rgba(0,245,255,0.15);border-radius:4px;">
+          <div class="bar-fill" id="ws-bar-${i}" style="height:0%;background:linear-gradient(to top,var(--cyan),var(--purple));"></div>
+        </div>
+        <div class="font-mono text-center mt-1" id="ws-amp-val-${i}" style="font-size:9px;color:var(--cyan)">0.00</div>
+      </div>`).join('');
+
+    return `
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div class="lg:col-span-2 space-y-3">
+        <div class="glass rounded-xl p-4 relative scanlines">
+          <div class="flex justify-between mb-2">
+            <span class="font-mono text-xs neon-cyan">YOUR SYNTHESIS</span>
+            <span id="ws-match-disp" class="font-mono text-xs" style="color:var(--text-muted)">MATCH: 0%</span>
+          </div>
+          <canvas id="waveCanvas" width="520" height="160" style="width:100%;background:rgba(0,0,0,0.35);border-radius:6px;"></canvas>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <div class="flex justify-between mb-2">
+            <span class="font-mono text-xs neon-purple">TARGET WAVEFORM — <span id="ws-level-name" class="neon-gold">Level 1</span></span>
+            <span id="ws-level" class="font-mono text-xs" style="color:var(--text-muted)">1/5</span>
+          </div>
+          <canvas id="targetCanvas" width="520" height="160" style="width:100%;background:rgba(0,0,0,0.35);border-radius:6px;"></canvas>
+        </div>
+        <!-- Match progress -->
+        <div class="glass rounded-xl p-4">
+          <div class="flex justify-between mb-1">
+            <span class="font-mono text-xs" style="color:var(--text-muted)">WAVEFORM MATCH</span>
+            <span id="ws-match-pct" class="font-mono text-xs neon-cyan">0%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" id="ws-prog" style="width:0%"></div></div>
+          <div id="ws-msg" class="mt-2 text-center font-mono text-xs" style="color:var(--text-muted);min-height:14px"></div>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div class="glass rounded-xl p-4">
+          <h3 class="font-display text-xs neon-cyan mb-1 tracking-wider">FOURIER COEFFICIENTS</h3>
+          <p class="font-mono text-xs mb-3" style="color:var(--text-muted)">Drag bars up/down to adjust aₙ</p>
+          <div class="eq-display mb-4 text-xs">f(t) = Σ aₙ·sin(nωt)</div>
+          <div class="flex gap-2 justify-between" id="ws-bars">${bars}</div>
+          <button id="ws-reset" class="btn-primary btn-purple w-full mt-3 text-xs py-2">↺ RESET BARS</button>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <div class="grid grid-cols-2 gap-3 text-center">
+            <div><div id="ws-score-disp" class="font-display text-xl neon-cyan">0</div><div class="font-mono text-xs" style="color:var(--text-muted)">SCORE</div></div>
+            <div><div id="ws-match-big" class="font-display text-xl neon-purple">0%</div><div class="font-mono text-xs" style="color:var(--text-muted)">MATCH</div></div>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <p class="font-mono text-xs mb-2" style="color:var(--cyan)">FOURIER THEORY</p>
+          <p class="text-xs" style="color:var(--text-muted);line-height:1.8">Drag the harmonic bars to match the purple target. Odd harmonics (n=1,3,5) build square waves. Even harmonics smooth the signal. 95%+ match advances the level.</p>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  _loadLevel(idx){
+    this.level=idx+1; this.levelLocked=false;
+    const lv=this.levels[idx];
+    this.harmonics.forEach((h,i)=>{h.amp=0;this._setBar(i,0);});
+    // build target harmonics
+    this.targets=lv.amps.map((a,i)=>({amp:a,freq:i+1}));
+    this._drawTarget();
+    document.getElementById('ws-level').textContent=`${idx+1}/5`;
+    document.getElementById('ws-level-name').textContent=lv.name;
+    const msg=document.getElementById('ws-msg'); if(msg) msg.textContent='';
+  }
+
+  _setBar(i,val){
+    const track=document.getElementById(`ws-bar-${i}`);
+    const label=document.getElementById(`ws-amp-val-${i}`);
+    if(track) track.style.height=(val*100)+'%';
+    if(label) label.textContent=val.toFixed(2);
+    this.harmonics[i].amp=val;
+  }
+
+  _bindDragBars(){
+    this.harmonics.forEach((h,i)=>{
+      const track=document.getElementById(`ws-track-${i}`);
+      if(!track) return;
+      const update=(clientY)=>{
+        const rect=track.getBoundingClientRect();
+        const pct=1-Math.max(0,Math.min(1,(clientY-rect.top)/rect.height));
+        this._setBar(i,parseFloat(pct.toFixed(2)));
+      };
+      track.addEventListener('mousedown',(e)=>{this.draggingBar=i;update(e.clientY);});
+      track.addEventListener('touchstart',(e)=>{this.draggingBar=i;update(e.touches[0].clientY);},{passive:true});
+    });
+    document.addEventListener('mousemove',(e)=>{if(this.draggingBar!==null)this._setBar(this.draggingBar,parseFloat((1-Math.max(0,Math.min(1,(e.clientY-document.getElementById(`ws-track-${this.draggingBar}`).getBoundingClientRect().top)/document.getElementById(`ws-track-${this.draggingBar}`).getBoundingClientRect().height))).toFixed(2)));});
+    document.addEventListener('touchmove',(e)=>{if(this.draggingBar!==null){const t=document.getElementById(`ws-track-${this.draggingBar}`);if(t){const rect=t.getBoundingClientRect();const pct=1-Math.max(0,Math.min(1,(e.touches[0].clientY-rect.top)/rect.height));this._setBar(this.draggingBar,parseFloat(pct.toFixed(2)));}}},{passive:true});
+    document.addEventListener('mouseup',()=>{this.draggingBar=null;});
+    document.addEventListener('touchend',()=>{this.draggingBar=null;});
+    document.getElementById('ws-reset')?.addEventListener('click',()=>{this.harmonics.forEach((_,i)=>this._setBar(i,0));});
+  }
+
+  _evaluate(t,harmonics){return harmonics.reduce((s,h)=>s+h.amp*Math.sin(h.freq*2*Math.PI*t),0);}
+
+  _drawWave(canvasId,harmonics,color){
+    const canvas=document.getElementById(canvasId); if(!canvas) return;
+    const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height;
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,0.04)'; ctx.lineWidth=0.5;
+    for(let x=0;x<W;x+=W/8){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=H/4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
+    ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=2;
+    for(let px=0;px<=W;px++){
+      const t=px/W; const y=this._evaluate(t+this.time*0.02,harmonics);
+      const cy=H/2-y*(H/2.8);
+      if(px===0)ctx.moveTo(px,cy);else ctx.lineTo(px,cy);
+    }
+    ctx.shadowColor=color; ctx.shadowBlur=8; ctx.stroke(); ctx.shadowBlur=0;
+  }
+
+  _drawTarget(){this._drawWave('targetCanvas',this.targets,'#bf5fff');}
+
+  _computeMatch(){
+    const N=100; let err=0;
+    for(let i=0;i<N;i++){
+      const t=i/N;
+      err+=(this._evaluate(t,this.harmonics)-this._evaluate(t,this.targets))**2;
+    }
+    return Math.max(0,100-Math.sqrt(err/N)*70);
+  }
+
+  _startLoop(){
+    const loop=()=>{
+      if(this.destroyed) return;
+      this.animId=requestAnimationFrame(loop);
+      this.time++;
+      this._drawWave('waveCanvas',this.harmonics,'#00f5ff');
+      this._drawTarget();
+      const match=this._computeMatch();
+      const matchPct=match.toFixed(0)+'%';
+      const md=document.getElementById('ws-match-disp'); if(md) md.textContent=`MATCH: ${matchPct}`;
+      const mp=document.getElementById('ws-match-pct'); if(mp) mp.textContent=matchPct;
+      const mb=document.getElementById('ws-match-big'); if(mb) mb.textContent=matchPct;
+      const prog=document.getElementById('ws-prog'); if(prog) prog.style.width=match+'%';
+
+      if(match>=95&&!this.levelLocked){
+        this.levelLocked=true;
+        this.score+=Math.round(match*3);
+        const sd=document.getElementById('ws-score-disp'); if(sd) sd.textContent=this.score;
+        this.onScore(this.score);
+        const msg=document.getElementById('ws-msg');
+        if(msg){msg.textContent=`✓ LEVEL ${this.level} COMPLETE — ${this.levels[this.level-1].name} mastered!`;msg.style.color='var(--success)';}
+        if(this.level<5) setTimeout(()=>this._loadLevel(this.level),1800);
+        else setTimeout(()=>{this.onComplete();_triggerSuccess(this.container);},1000);
+      }
+    };
+    loop();
+  }
+
+  destroy(){this.destroyed=true;if(this.animId)cancelAnimationFrame(this.animId);}
+}
+
+
+/* ===================================================================
+   GAME 3: AREA ALCHEMIST — Enhanced with timer per question + bonus rounds
+=================================================================== */
+class AreaAlchemist {
+  constructor({container,gameId,onScore,onComplete}){
+    this.container=container; this.gameId=gameId;
+    this.onScore=onScore; this.onComplete=onComplete;
+    this.score=0; this.lives=3; this.puzzleIdx=0; this.solved=0;
+    this.streak=0; this.bonusMode=false;
+    this.timerInterval=null; this.timeLeft=30;
+  }
+
+  _puzzles(){
+    return [
+      {q:'Γ(4) = ?',hint:'Γ(n)=(n−1)! for integers',ans:6,tol:0,exp:'Γ(4)=3!=6',formula:'Γ(n)=(n−1)!',val:'6',icon:'Γ',cat:'GAMMA — INTEGER',time:20},
+      {q:'Γ(1/2) = √? (enter π value ≈)',hint:'Special: Γ(1/2)=√π',ans:Math.PI,tol:0.02,exp:'Γ(1/2)=√π, so radicand=π≈3.14159',formula:'Γ(1/2)=√π',val:'π≈3.14159',icon:'√π',cat:'GAMMA — HALF-INT',time:25},
+      {q:'B(2,3) = ? (decimal)',hint:'B(x,y)=Γ(x)Γ(y)/Γ(x+y)',ans:1/12,tol:0.002,exp:'Γ(2)Γ(3)/Γ(5)=1!·2!/4!=2/24=1/12≈0.0833',formula:'B(x,y)=Γ(x)Γ(y)/Γ(x+y)',val:'0.0833',icon:'β',cat:'BETA FUNCTION',time:30},
+      {q:'Γ(5) = ?',hint:'Apply recursion from Γ(4)=6',ans:24,tol:0,exp:'Γ(5)=4·Γ(4)=4·6=24',formula:'Γ(n+1)=n·Γ(n)',val:'24',icon:'4!',cat:'GAMMA — RECURSION',time:20},
+      {q:'Γ(3/2) = √π/? (enter denominator)',hint:'Γ(3/2)=(1/2)·Γ(1/2)',ans:2,tol:0,exp:'Γ(3/2)=(1/2)·√π → denominator=2',formula:'Γ(n+1)=n·Γ(n)',val:'2',icon:'½',cat:'GAMMA — HALF-INT',time:25},
+      {q:'B(1,1) = ?',hint:'B(1,1)=Γ(1)²/Γ(2)=?',ans:1,tol:0,exp:'Γ(1)=1, Γ(2)=1, so B(1,1)=1/1=1. Also =∫₀¹dt=1',formula:'B(x,y)=∫₀¹t^(x−1)(1−t)^(y−1)dt',val:'1',icon:'∫',cat:'BETA — INTEGRAL',time:20},
+      {q:'Γ(7) = ?',hint:'Apply recursion; Γ(6)=120',ans:720,tol:0,exp:'Γ(7)=6·Γ(6)=6·120=720=6!',formula:'Γ(n+1)=n·Γ(n)',val:'720',icon:'6!',cat:'GAMMA — RECURSION',time:20},
+      {q:'B(3,3) = ? (decimal)',hint:'B(3,3)=Γ(3)²/Γ(6)',ans:1/30,tol:0.001,exp:'Γ(3)=2!=2, Γ(6)=5!=120, B(3,3)=4/120=1/30≈0.0333',formula:'B(x,y)=Γ(x)Γ(y)/Γ(x+y)',val:'0.0333',icon:'β',cat:'BETA FUNCTION',time:35},
+    ];
+  }
+
+  init(){
+    this.puzzles=this._puzzles();
+    this.container.innerHTML=this._buildUI();
+    this._renderGrid(); this._loadPuzzle(0); this._bindEvents();
+  }
+
+  _buildUI(){
+    return `
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div class="lg:col-span-2 space-y-4">
+        <div class="glass rounded-xl p-5">
+          <div class="flex justify-between items-center mb-4">
+            <span class="font-mono text-xs neon-cyan">ALCHEMICAL EQUATION GRID</span>
+            <span id="aa-prog" class="font-mono text-xs" style="color:var(--text-muted)">0/${this.puzzles.length}</span>
+          </div>
+          <div id="aa-grid" class="grid grid-cols-4 gap-2 mb-4"></div>
+          <div class="prog-bar"><div class="prog-fill" id="aa-fill" style="width:0%"></div></div>
+        </div>
+        <div class="glass rounded-xl p-5" id="aa-solved-panel" style="display:none">
+          <p class="font-mono text-xs neon-green mb-2">✓ LAST SOLVED</p>
+          <div class="eq-display text-sm" id="aa-last-formula"></div>
+          <p class="font-mono text-xs mt-2" id="aa-last-exp" style="color:var(--text-muted)"></p>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div class="glass rounded-xl p-5" id="aa-puzzle-card">
+          <div class="flex justify-between mb-2">
+            <span class="font-display text-xs neon-cyan tracking-wider">PUZZLE</span>
+            <span id="aa-puzzle-num" class="font-mono text-xs" style="color:var(--text-muted)">1/${this.puzzles.length}</span>
+          </div>
+          <!-- Timer -->
+          <div class="prog-bar mb-3"><div class="timer-bar" id="aa-timer-bar" style="width:100%;background:var(--cyan);transition:width 0.1s linear"></div></div>
+          <div class="flex justify-between mb-2">
+            <span id="aa-category" class="font-mono text-xs px-2 py-0.5 rounded" style="background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);color:var(--cyan)"></span>
+            <span id="aa-time-left" class="font-mono text-xs neon-gold">30s</span>
+          </div>
+          <div id="aa-question" class="eq-display mb-3 text-sm min-h-[60px] flex items-center justify-center"></div>
+          <div id="aa-hint" class="font-mono text-xs mb-3 text-center" style="color:var(--text-muted);min-height:14px"></div>
+          <input type="number" id="aa-input" placeholder="Enter your answer..." step="any" />
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <button id="aa-submit" class="btn-primary text-xs py-2">SUBMIT ↗</button>
+            <button id="aa-skip" class="btn-primary btn-purple text-xs py-2">HINT 💡</button>
+          </div>
+          <div id="aa-feedback" class="mt-3 font-mono text-xs text-center min-h-[16px]"></div>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div><div id="aa-score-disp" class="font-display text-xl neon-cyan">0</div><div class="font-mono text-xs" style="color:var(--text-muted)">SCORE</div></div>
+            <div><div id="aa-lives" class="font-display text-xl" style="color:var(--success)">♥♥♥</div><div class="font-mono text-xs" style="color:var(--text-muted)">LIVES</div></div>
+            <div><div id="aa-streak" class="font-display text-xl neon-gold">0</div><div class="font-mono text-xs" style="color:var(--text-muted)">STREAK</div></div>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <p class="font-mono text-xs mb-2" style="color:var(--cyan)">KEY IDENTITIES</p>
+          <div class="space-y-1 font-mono text-xs" style="color:var(--text-muted)">
+            <div class="p-1.5 glass rounded">Γ(n) = (n−1)!</div>
+            <div class="p-1.5 glass rounded">Γ(1/2) = √π</div>
+            <div class="p-1.5 glass rounded">Γ(n+1) = n·Γ(n)</div>
+            <div class="p-1.5 glass rounded">B(x,y) = Γ(x)Γ(y)/Γ(x+y)</div>
+            <div class="p-1.5 glass rounded">B(x,y) = ∫₀¹t^(x−1)(1−t)^(y−1)dt</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  _cellHTML(p,idx,filled){
+    const color=filled?'#00f5ff':'rgba(255,255,255,0.2)';
+    const bg=filled?'rgba(0,245,255,0.12)':'transparent';
+    const border=filled?'rgba(0,245,255,0.4)':'rgba(255,255,255,0.1)';
+    return `
+    <div class="alch-cell" id="aa-shape-${idx}" style="background:${bg};border-color:${border}">
+      <div style="font-size:1.2rem">${p.icon}</div>
+      <div class="font-mono text-center" style="font-size:7px;color:${filled?color:'var(--text-muted)'};">${p.cat}</div>
+      ${filled?`<div class="font-mono" style="font-size:9px;color:${color}">${p.val}</div>`:''}
+      ${filled?`<div style="font-size:10px">✓</div>`:''}
+    </div>`;
+  }
+
+  _renderGrid(){
+    const grid=document.getElementById('aa-grid'); if(!grid) return;
+    grid.innerHTML=this.puzzles.map((p,i)=>this._cellHTML(p,i,i<this.solved)).join('');
+  }
+
+  _loadPuzzle(idx){
+    if(idx>=this.puzzles.length) return;
+    clearInterval(this.timerInterval);
+    this.puzzleIdx=idx;
+    const p=this.puzzles[idx];
+    this.timeLeft=p.time;
+    document.getElementById('aa-question').textContent=p.q;
+    document.getElementById('aa-category').textContent=p.cat;
+    document.getElementById('aa-hint').textContent='';
+    document.getElementById('aa-puzzle-num').textContent=`${idx+1}/${this.puzzles.length}`;
+    document.getElementById('aa-input').value='';
+    document.getElementById('aa-feedback').textContent='';
+    document.getElementById('aa-time-left').textContent=p.time+'s';
+    document.getElementById('aa-timer-bar').style.width='100%';
+    document.getElementById('aa-input').focus();
+    // Start countdown
+    this.timerInterval=setInterval(()=>{
+      this.timeLeft--;
+      document.getElementById('aa-time-left').textContent=this.timeLeft+'s';
+      document.getElementById('aa-timer-bar').style.width=((this.timeLeft/p.time)*100)+'%';
+      if(this.timeLeft<=0){
+        clearInterval(this.timerInterval);
+        this.streak=0; document.getElementById('aa-streak').textContent=0;
+        this._feedback(`⏱ Time up! Answer: ${p.val}`,'danger');
+        this.lives=Math.max(0,this.lives-1); this._updateLives();
+        setTimeout(()=>{this.solved++;this._renderGrid();this._loadPuzzle(this.puzzleIdx+1);},2000);
+      }
+    },1000);
+  }
+
+  _bindEvents(){
+    document.getElementById('aa-submit')?.addEventListener('click',()=>this._checkAnswer());
+    document.getElementById('aa-input')?.addEventListener('keydown',e=>{if(e.key==='Enter')this._checkAnswer();});
+    document.getElementById('aa-skip')?.addEventListener('click',()=>{
+      const p=this.puzzles[this.puzzleIdx];
+      document.getElementById('aa-hint').textContent=`💡 ${p.hint}`;
+    });
+  }
+
+  _checkAnswer(){
+    clearInterval(this.timerInterval);
+    const input=document.getElementById('aa-input'); const val=parseFloat(input?.value);
+    if(isNaN(val)){this._feedback('Enter a valid number','danger');return;}
+    const p=this.puzzles[this.puzzleIdx];
+    const correct=Math.abs(val-p.ans)<=(p.tol+1e-9);
+    if(correct){
+      this.solved++; this.streak++;
+      const speedBonus=Math.max(0,this.timeLeft*5);
+      const streakMult=Math.min(this.streak,4);
+      const earned=150+speedBonus+(streakMult>1?50*(streakMult-1):0);
+      this.score+=earned;
+      this._feedback(`✓ Correct! +${earned}pts (speed+${speedBonus}, streak x${streakMult})`,'success');
+      this._renderGrid();
+      const panel=document.getElementById('aa-solved-panel');
+      if(panel) panel.style.display='block';
+      document.getElementById('aa-last-formula').textContent=p.formula;
+      document.getElementById('aa-last-exp').textContent=p.exp;
+      document.getElementById('aa-prog').textContent=`${this.solved}/${this.puzzles.length}`;
+      document.getElementById('aa-fill').style.width=`${(this.solved/this.puzzles.length)*100}%`;
+      document.getElementById('aa-streak').textContent=this.streak;
+      document.getElementById('aa-score-disp').textContent=this.score;
+      this.onScore(this.score);
+      if(this.solved>=this.puzzles.length) setTimeout(()=>{this.onComplete();_triggerSuccess(this.container);},800);
+      else setTimeout(()=>this._loadPuzzle(this.puzzleIdx+1),1800);
+    } else {
+      this.streak=0; this.lives--;
+      this._updateLives();
+      document.getElementById('aa-streak').textContent=0;
+      this._feedback(`✗ Off by ${Math.abs(val-p.ans).toFixed(4)}. Try again.`,'danger');
+      if(this.lives<=0){
+        this.lives=3; this._updateLives();
+        this._feedback('Answer: '+p.val+' — Moving on.','muted');
+        setTimeout(()=>{this.solved++;this._renderGrid();this._loadPuzzle(this.puzzleIdx+1);},2200);
+      }
+    }
+  }
+
+  _updateLives(){
+    const hearts='♥'.repeat(Math.max(0,this.lives))+'♡'.repeat(Math.max(0,3-this.lives));
+    const el=document.getElementById('aa-lives');
+    if(el){el.textContent=hearts;el.style.color=this.lives>1?'var(--success)':'var(--danger)';}
+  }
+
+  _feedback(text,type){
+    const el=document.getElementById('aa-feedback'); if(!el) return;
+    const c={success:'var(--success)',danger:'var(--danger)',muted:'var(--text-muted)'};
+    el.textContent=text; el.style.color=c[type]||'var(--text-muted)';
+  }
+
+  destroy(){clearInterval(this.timerInterval);}
+}
+
+
+/* ===================================================================
+   GAME 4: VOLUME SCULPTOR — Enhanced with random bound challenges + 3D labels
+=================================================================== */
+class VolumeSculptor {
+  constructor({container,gameId,onScore,onComplete}){
+    this.container=container; this.gameId=gameId;
+    this.onScore=onScore; this.onComplete=onComplete;
+    this.score=0; this.level=0; this.attempts=0;
+    this.levels=[
+      {target:6,  hint:'Try [0,1]×[0,2]×[0,3] — V=(x₂−x₁)(y₂−y₁)(z₂−z₁)',label:'6 cubic units',challenge:'Find bounds with V=6'},
+      {target:12, hint:'V=2×2×3=12 or 1×3×4=12 — many solutions!',label:'12 cubic units',challenge:'Find ANY bounds giving V=12'},
+      {target:8,  hint:'A perfect cube! x₂−x₁=y₂−y₁=z₂−z₁=2',label:'8 cubic units — perfect cube!',challenge:'Make a perfect cube V=8'},
+      {target:24, hint:'Try [0,2]×[0,3]×[0,4]',label:'24 cubic units',challenge:'Asymmetric box V=24'},
+      {target:30, hint:'2×3×5 or 1×5×6 — efficiency counts!',label:'30 cubic units',challenge:'Minimum-waste V=30 (score based on bounds tightness!)'},
+    ];
+  }
+
+  init(){ this.container.innerHTML=this._buildUI(); this._bindEvents(); this._loadLevel(0); }
+
+  _buildUI(){
+    const row=(axis,color,val2)=>`
+    <div class="glass rounded-lg p-3 mb-2">
+      <div class="font-mono text-xs mb-2" style="color:${color}">${axis}-axis bounds</div>
+      <div class="grid grid-cols-2 gap-2">
+        <div><label class="font-mono text-xs" style="color:var(--text-muted)">${axis}₁ (lower)</label>
+          <input type="number" id="vs-${axis.toLowerCase()}1" value="0" min="0" max="20" step="0.5"/></div>
+        <div><label class="font-mono text-xs" style="color:var(--text-muted)">${axis}₂ (upper)</label>
+          <input type="number" id="vs-${axis.toLowerCase()}2" value="${val2}" min="0" max="20" step="0.5"/></div>
+      </div>
+    </div>`;
+    return `
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div class="lg:col-span-2">
+        <div class="glass rounded-xl p-6">
+          <div class="flex justify-between mb-4">
+            <span class="font-mono text-xs neon-cyan">3D VOLUME SCULPTOR</span>
+            <span id="vs-level-label" class="font-mono text-xs" style="color:var(--text-muted)">LEVEL 1/5</span>
+          </div>
+          <div id="vs-challenge" class="font-mono text-xs mb-4 px-3 py-2 rounded" style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);color:var(--gold)"></div>
+          <div class="iso-scene flex items-center justify-center mb-5" style="height:220px">
+            <div class="iso-box" id="vs-box"></div>
+          </div>
+          <!-- Live formula -->
+          <div class="eq-display text-sm mb-4" id="vs-formula">
+            V = ∫₀² ∫₀² ∫₀² dz dy dx = 8
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="glass rounded-lg p-3">
+              <div id="vs-computed-vol" class="font-display text-2xl neon-cyan">8</div>
+              <div class="font-mono text-xs" style="color:var(--text-muted)">YOUR VOLUME</div>
+            </div>
+            <div class="glass rounded-lg p-3">
+              <div id="vs-target-vol" class="font-display text-2xl neon-purple">6</div>
+              <div class="font-mono text-xs" style="color:var(--text-muted)">TARGET</div>
+            </div>
+            <div class="glass rounded-lg p-3">
+              <div id="vs-delta" class="font-display text-xl" style="color:var(--warn)">Δ2.0</div>
+              <div class="font-mono text-xs" style="color:var(--text-muted)">DIFFERENCE</div>
+            </div>
+          </div>
+          <div id="vs-msg" class="mt-3 text-center font-mono text-xs" style="color:var(--text-muted);min-height:16px"></div>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div class="glass rounded-xl p-5">
+          <h3 class="font-display text-xs neon-cyan mb-3 tracking-wider">INTEGRATION BOUNDS</h3>
+          ${row('X','var(--cyan)',2)}${row('Y','var(--purple)',2)}${row('Z','var(--success)',2)}
+          <button id="vs-apply" class="btn-primary w-full mt-3 text-xs py-2">✓ APPLY & CHECK</button>
+          <button id="vs-random" class="btn-primary btn-gold w-full mt-2 text-xs py-2">🎲 RANDOM BOUNDS</button>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <div class="grid grid-cols-2 gap-2 text-center">
+            <div><div id="vs-score-disp" class="font-display text-xl neon-cyan">0</div><div class="font-mono text-xs" style="color:var(--text-muted)">SCORE</div></div>
+            <div><div id="vs-levels-done" class="font-display text-xl neon-purple">0/5</div><div class="font-mono text-xs" style="color:var(--text-muted)">LEVELS</div></div>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <div id="vs-hint" class="font-mono text-xs mb-3" style="color:var(--warn)"></div>
+          <p class="font-mono text-xs mb-2" style="color:var(--cyan)">THEORY</p>
+          <p class="text-xs" style="color:var(--text-muted);line-height:1.8">V = ∭dV = (x₂−x₁)(y₂−y₁)(z₂−z₁) for rectangular bounds. The spinning box scales live. Fubini's theorem: integrate in any order — result is identical.</p>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  _bindEvents(){
+    document.getElementById('vs-apply')?.addEventListener('click',()=>this._applyBounds());
+    document.getElementById('vs-random')?.addEventListener('click',()=>this._randomBounds());
+    ['x1','x2','y1','y2','z1','z2'].forEach(id=>{
+      document.getElementById(`vs-${id}`)?.addEventListener('input',()=>this._previewBounds());
+    });
+  }
+
+  _loadLevel(idx){
+    this.level=idx; this.attempts=0;
+    const lv=this.levels[idx];
+    document.getElementById('vs-target-vol').textContent=lv.target;
+    document.getElementById('vs-hint').textContent=`Hint: ${lv.hint}`;
+    document.getElementById('vs-level-label').textContent=`LEVEL ${idx+1}/5`;
+    document.getElementById('vs-challenge').textContent=`⊕ CHALLENGE: ${lv.challenge}`;
+    this._previewBounds();
+  }
+
+  _readBounds(){
+    const g=id=>{const v=parseFloat(document.getElementById(`vs-${id}`)?.value);return isNaN(v)?0:v;};
+    return {x1:g('x1'),x2:g('x2'),y1:g('y1'),y2:g('y2'),z1:g('z1'),z2:g('z2')};
+  }
+
+  _computeVolume(b){
+    const dx=b.x2-b.x1,dy=b.y2-b.y1,dz=b.z2-b.z1;
+    if(dx<0||dy<0||dz<0) return null;
+    if(dx===0||dy===0||dz===0) return 0;
+    return parseFloat((dx*dy*dz).toFixed(4));
+  }
+
+  _previewBounds(){
+    const b=this._readBounds(); const vol=this._computeVolume(b);
+    const volEl=document.getElementById('vs-computed-vol');
+    const deltaEl=document.getElementById('vs-delta');
+    const target=this.levels[this.level]?.target||0;
+    if(vol===null){if(volEl){volEl.textContent='ERR';volEl.style.color='var(--danger)';}return;}
+    if(volEl){volEl.textContent=vol;volEl.style.color='var(--cyan)';}
+    if(deltaEl){
+      const d=(vol-target).toFixed(2);
+      deltaEl.textContent=`Δ${d>0?'+':''}${d}`;
+      deltaEl.style.color=Math.abs(vol-target)<0.5?'var(--success)':Math.abs(vol-target)<2?'var(--warn)':'var(--danger)';
+    }
+    // Update formula display
+    const f=document.getElementById('vs-formula');
+    if(f) f.innerHTML=`V = ∫<sub>${b.x1}</sub><sup>${b.x2}</sup> ∫<sub>${b.y1}</sub><sup>${b.y2}</sup> ∫<sub>${b.z1}</sub><sup>${b.z2}</sup> dz dy dx = <strong style="color:var(--cyan)">${vol}</strong>`;
+    this._updateBox(b);
+  }
+
+  _applyBounds(){
+    const b=this._readBounds(); const vol=this._computeVolume(b);
+    if(vol===null){this._setMsg('⚠ Upper bound must exceed lower bound','danger');return;}
+    const target=this.levels[this.level].target;
+    this.attempts++;
+    const match=Math.abs(vol-target)<0.05;
+    if(match){
+      // Score: more points for fewer attempts
+      const attemptBonus=Math.max(0,5-this.attempts)*30;
+      const earned=200+attemptBonus;
+      this.score+=earned;
+      document.getElementById('vs-score-disp').textContent=this.score;
+      this.onScore(this.score);
+      this._setMsg(`✓ MATCHED! V=${vol} — ${earned}pts (${this.attempts} attempt${this.attempts>1?'s':''})`, 'success');
+      const done=this.level+1;
+      document.getElementById('vs-levels-done').textContent=`${done}/5`;
+      if(this.level<this.levels.length-1) setTimeout(()=>this._loadLevel(this.level+1),1800);
+      else setTimeout(()=>{this.onComplete();_triggerSuccess(this.container);},800);
+    } else {
+      const diff=(vol-target).toFixed(2);
+      const hint2=vol>target?'▼ Reduce one or more bounds':'▲ Increase one or more bounds';
+      this._setMsg(`✗ V=${vol}, Target=${target} (${diff>0?'+':''}${diff}) — ${hint2}`,'danger');
+    }
+  }
+
+  _randomBounds(){
+    const target=this.levels[this.level].target;
+    // Find a random factorisation
+    const factors=[];
+    for(let a=1;a<=target;a++) for(let b=1;b<=target/a;b++) if(target%(a*b)===0) factors.push([a,b,target/(a*b)]);
+    if(factors.length===0) return;
+    const [dx,dy,dz]=factors[Math.floor(Math.random()*factors.length)];
+    const set=(id,val)=>{const el=document.getElementById(`vs-${id}`);if(el)el.value=val;};
+    set('x1',0);set('x2',dx);set('y1',0);set('y2',dy);set('z1',0);set('z2',dz);
+    this._previewBounds();
+    this._setMsg(`🎲 Random suggestion: [0,${dx}]×[0,${dy}]×[0,${dz}] — Check if this matches!`,'');
+  }
+
+  _updateBox(b){
+    const box=document.getElementById('vs-box'); if(!box) return;
+    const dx=Math.max(0.1,b.x2-b.x1),dy=Math.max(0.1,b.y2-b.y1),dz=Math.max(0.1,b.z2-b.z1);
+    const maxDim=Math.max(dx,dy,dz,1); const scale=110/maxDim;
+    const W=Math.round(dx*scale),H=Math.round(dy*scale),D=Math.round(dz*scale);
+    box.style.cssText=`width:${W}px;height:${H}px;transform-style:preserve-3d;position:relative;margin:auto;`;
+    const a=0.15;
+    box.innerHTML=`
+      <div style="position:absolute;width:${W}px;height:${H}px;background:rgba(0,245,255,${a});border:1px solid #00f5ff;transform:translateZ(${D/2}px);display:flex;align-items:center;justify-content:center;"><span style="font-family:Share Tech Mono;font-size:8px;color:#00f5ff;opacity:0.7">Δx=${(b.x2-b.x1).toFixed(1)}</span></div>
+      <div style="position:absolute;width:${W}px;height:${H}px;background:rgba(0,245,255,${a*0.5});border:1px solid #00f5ff;transform:translateZ(-${D/2}px) rotateY(180deg)"></div>
+      <div style="position:absolute;width:${D}px;height:${H}px;background:rgba(191,95,255,${a});border:1px solid #bf5fff;transform:rotateY(90deg) translateZ(${W/2}px);left:${(W-D)/2}px;display:flex;align-items:center;justify-content:center;"><span style="font-family:Share Tech Mono;font-size:8px;color:#bf5fff;opacity:0.7">Δy=${(b.y2-b.y1).toFixed(1)}</span></div>
+      <div style="position:absolute;width:${D}px;height:${H}px;background:rgba(191,95,255,${a*0.5});border:1px solid #bf5fff;transform:rotateY(-90deg) translateZ(${W/2}px);left:${(W-D)/2}px"></div>
+      <div style="position:absolute;width:${W}px;height:${D}px;background:rgba(0,255,140,${a});border:1px solid #00ff8c;transform:rotateX(90deg) translateZ(${H/2}px);top:${(H-D)/2}px;display:flex;align-items:center;justify-content:center;"><span style="font-family:Share Tech Mono;font-size:8px;color:#00ff8c;opacity:0.7">Δz=${(b.z2-b.z1).toFixed(1)}</span></div>
+      <div style="position:absolute;width:${W}px;height:${D}px;background:rgba(0,255,140,${a*0.5});border:1px solid #00ff8c;transform:rotateX(-90deg) translateZ(${H/2}px);top:${(H-D)/2}px"></div>`;
+  }
+
+  _setMsg(text,type){
+    const el=document.getElementById('vs-msg'); if(!el) return;
+    const c={success:'var(--success)',danger:'var(--danger)','':`var(--text-muted)`};
+    el.textContent=text; el.style.color=c[type]!==undefined?c[type]:'var(--text-muted)';
+  }
+
+  destroy(){}
+}
+
+
+/* ===== BOOT ===== */
+document.addEventListener('DOMContentLoaded',()=>{ App.init(); });
+</script>
+</body>
+</html>
